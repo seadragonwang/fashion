@@ -1,0 +1,8 @@
+1. Downloading latest mysql community server at http://dev.mysql.com/downloads/mysql/
+2. Install and setup the mysql server on your local machine.
+	a. Install mysql server
+	b. Create "fashion" user with "fashionadmin" password
+3. Open Mysql workbench application and run "create database fashion;"
+4. Run all ddl sql scripts in sql/v1/rollforward/ddl and sql/v2/rollforward/ddl
+5. If you didn't have glassfish installed on you local machine, you need download and install the latest glassfish.
+6. Set up the connection pool and datasource in glassfish.

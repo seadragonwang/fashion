@@ -1,0 +1,25 @@
+<persistence version="2.1"
+	xmlns="http://xmlns.jcp.org/xml/ns/persistence" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence 
+	http://www.oracle.com/webfolder/technetwork/jsc/xml/ns/persistence/persistence_2_1.xsd">
+	<persistence-unit name="FASHIONPUTEST" transaction-type="JTA">
+		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+		<jta-data-source>jdbc/fashionDataSource</jta-data-source>
+		<class>com.seadragon.apps.fashion.model.Item</class>
+		<class>com.seadragon.apps.fashion.model.Product</class>
+		<class>com.seadragon.apps.fashion.model.ItemImage</class>
+		<class>com.seadragon.apps.fashion.model.ProductDetail</class>
+		<class>com.seadragon.apps.fashion.model.Customer</class>
+		<class>com.seadragon.apps.fashion.model.Promotion</class>
+		<class>com.seadragon.apps.fashion.model.ItemPromotion</class>
+		<exclude-unlisted-classes>true</exclude-unlisted-classes>
+		<properties>
+			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect" />
+			<property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.generate_statistics" value="true" />
+			<property name="hibernate.default_batch_fetch_size" value="8" />
+			<property name="hibernate.transaction.jta.platform" value="com.seadragon.test.AtomikosJtaPlatform"/>
+		</properties>
+	</persistence-unit>
+</persistence>
