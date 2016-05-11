@@ -10,7 +10,8 @@
 
 	<appender name="FILE" class="org.apache.log4j.DailyRollingFileAppender">
 		<param name="Threshold" value="INFO" />
-		<param name="file" value="${com.sun.aas.instanceRoot}/logs/fashion.log" />
+		<param name="file" value="logs/fashion.log" />
+		<!--<param name="file" value="${com.sun.aas.instanceRoot}/logs/fashion.log" />-->
 		<param name="DatePattern" value="'.'yyyy-MM-dd" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="[%t] %d{HH:mm:ss,SSS} %-5p %l - %m%n" />

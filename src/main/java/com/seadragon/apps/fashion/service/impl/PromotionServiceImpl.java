@@ -2,8 +2,6 @@ package com.seadragon.apps.fashion.service.impl;
 
 import java.util.Date;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.seadragon.apps.fashion.model.Promotion;
 import com.seadragon.apps.fashion.repository.PromotionRepository;
 import com.seadragon.apps.fashion.service.PromotionService;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service("promotionService")
 @Transactional

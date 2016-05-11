@@ -56,6 +56,7 @@
 	<bean id="atomikosUserTransaction" class="com.atomikos.icatch.jta.UserTransactionImp">
 		<property name="transactionTimeout" value="300" />
 	</bean>
+	<bean id="driver" class="org.openqa.selenium.firefox.FirefoxDriver" destroy-method="quit"/>
  	<bean id="jcrewScraper"
 		class="com.seadragon.apps.fashion.scraper.httpclient.JCrewScraper">
 		<property name="serverUrl" value="http://localhost:8888"/>

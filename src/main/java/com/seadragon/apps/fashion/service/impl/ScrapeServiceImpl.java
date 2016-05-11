@@ -6,8 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import javax.transaction.Transactional;
-
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,8 +21,11 @@ import com.seadragon.apps.fashion.model.ProductDetail;
 import com.seadragon.apps.fashion.scraper.Scraper;
 import com.seadragon.apps.fashion.service.ItemService;
 import com.seadragon.apps.fashion.service.ScrapeService;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
+@Service
 public class ScrapeServiceImpl implements ScrapeService{
 	private static Logger logger = LoggerFactory.getLogger(ScrapeServiceImpl.class);
 	
@@ -51,7 +52,6 @@ public class ScrapeServiceImpl implements ScrapeService{
 		this.itemScraperMap = itemScraperMap;
 	}
 
-	@Override
 	public Item scrape(WebDriver driver, String webSite, String url) {
 		if(itemScraperMap.get(webSite) != null){
 			return itemScraperMap.get(webSite).scrape(driver, url);
@@ -61,7 +61,6 @@ public class ScrapeServiceImpl implements ScrapeService{
 		}
 	}
 
-	@Override
 	public List<Item> scrapeSale(WebDriver driver) {
 		List<Item> results = new ArrayList<Item>();
 		for(Scraper<List<Item>> scraper : saleScrapers){
@@ -72,7 +71,6 @@ public class ScrapeServiceImpl implements ScrapeService{
 	}
 
 	@Transactional
-	@Override
 	public boolean scrape(WebDriver driver, Pageable request) {
 		Page<Item> page = itemService.findAll(request);
 		boolean changed = false;
@@ -106,7 +104,7 @@ public class ScrapeServiceImpl implements ScrapeService{
 							if(p1.getColorCode().equalsIgnoreCase(p2.getColorCode()) && p1.getProductSize().equalsIgnoreCase(p2.getProductSize())){
 								ProductDetail pd1 = p1.getProductDetails().get(0);
 								ProductDetail pd2 = p2.getProductDetails().get(0);
-								ite
+
 								if(pd1.getPrice() != pd2.getPrice() || (pd1.isAvailable() ^ pd2.isAvailable())){
 									pd1.setProduct(p2);
 									p2.getProductDetails().add(0, pd1);
@@ -123,6 +121,6 @@ public class ScrapeServiceImpl implements ScrapeService{
 				itemService.update(item);
 			}
 		}
-		return page.hasNextPage();
+		return page.hasNext();
 	}
 }

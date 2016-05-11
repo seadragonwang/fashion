@@ -1,2 +1,1 @@
 alter table fashion.product_detail modify date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
-alter table fashion.product_detail modify date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;

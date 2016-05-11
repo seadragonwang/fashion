@@ -38,7 +38,6 @@ public class JCrewItemScraperSeleniumImpl implements Scraper<Item> {
 		this.webSite = webSite;
 	}
 
-	@Override
 	public Item scrape(WebDriver driver, String url) {
 //		WebDriver driver = new FirefoxDriver();
 		JavascriptExecutor executor = (JavascriptExecutor) driver;

@@ -8,7 +8,6 @@ CREATE TABLE product_detail
   product_id long references product(id),
   price float(6,2),
   date_created timestamp DEFAULT NOW(),
-  date_updated timestamp DEFAULT NOW(),
   available tinyint,
   CONSTRAINT pk_product_detail PRIMARY KEY (id)
 );

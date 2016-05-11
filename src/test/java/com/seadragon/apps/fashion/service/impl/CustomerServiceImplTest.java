@@ -1,7 +1,5 @@
 package com.seadragon.apps.fashion.service.impl;
 
-import javax.transaction.Transactional;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +11,7 @@ import com.seadragon.apps.fashion.model.Item;
 import com.seadragon.apps.fashion.service.CustomerService;
 import com.seadragon.apps.fashion.service.ItemService;
 import com.seadragon.apps.fashion.service.ScrapeService;
+import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/fashion-application-context-test.xml"})
