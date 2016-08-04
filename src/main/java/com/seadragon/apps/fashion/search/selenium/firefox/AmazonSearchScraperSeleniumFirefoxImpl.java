@@ -22,7 +22,7 @@ public class AmazonSearchScraperSeleniumFirefoxImpl {
     public void search(WebDriver driver, String url) {
         driver.manage().timeouts().setScriptTimeout(5, TimeUnit.SECONDS);
         driver.manage().timeouts().pageLoadTimeout(20, TimeUnit.SECONDS);
-        driver.navigate().to(url);
+        driver.get(url);
         WebElement searchTextBox = driver.findElement(By.id("twotabsearchtextbox"));
         WebElement submitButton = driver.findElement(By.xpath("//input[@value='Go']"));
         File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
@@ -91,7 +91,7 @@ public class AmazonSearchScraperSeleniumFirefoxImpl {
                     WebElement productColor = driver.findElement(By.xpath("//div[@id='variation_color_name']/div/span"));
                     while(productColor == null){
                         try {
-                            Thread.sleep(2000);
+                            Thread.sleep(1000);
                         }catch(InterruptedException ex){
                             logger.error(ex.getLocalizedMessage(), ex);
                         }
@@ -107,10 +107,8 @@ public class AmazonSearchScraperSeleniumFirefoxImpl {
                         continue;
                     }
                     String productSize = sizeList.get(j).getText();
-                    logger.info(productTitle.getText());
-                    logger.info(productSize);
-                    logger.info(productColor.getText());
-                    logger.info(productPrice.getText());
+
+                    logger.info(productTitle.getText()+"|"+productSize+"|"+productColor.getText()+"|"+productPrice.getText());
                 }
             }
             logger.info(driver.getTitle());

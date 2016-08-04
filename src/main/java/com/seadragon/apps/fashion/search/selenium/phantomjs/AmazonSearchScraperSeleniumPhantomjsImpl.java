@@ -8,9 +8,11 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import static com.seadragon.apps.fashion.util.FashionUtil.*;
 
 /**
  * Created by hwang001c on 5/7/16.
@@ -22,7 +24,9 @@ public class AmazonSearchScraperSeleniumPhantomjsImpl {
     public void search(WebDriver driver, String url) {
         driver.manage().timeouts().setScriptTimeout(5, TimeUnit.SECONDS);
         driver.manage().timeouts().pageLoadTimeout(20, TimeUnit.SECONDS);
-        driver.navigate().to(url);
+        driver.get(url);
+        saveSnapshot(driver);
+        logger.info(driver.getPageSource());
         WebElement searchTextBox = null;
         WebElement submitButton = null;
         try {
@@ -33,99 +37,61 @@ public class AmazonSearchScraperSeleniumPhantomjsImpl {
             submitButton = driver.findElement(By.xpath("//form[@id='nav-search-form']/div/div/input[@type='submit']"));
         }
 
-        logger.info(searchTextBox.getTagName());
         searchTextBox.sendKeys("shoes for boys");
         submitButton.click();
+        waitForLoad(driver);
 //        driver.findElement(By.cssSelector("a[href*='Boys']")).click();
-        logger.info(driver.getPageSource());
-        List<WebElement> linkList = driver.findElements(By.xpath("//ul[@id='s-results-list-atf']/li[contains(@class, 's-result-item')]/div[@class='s-item-container']/div/div/div/span/div/a[contains(@class, 'a-link-normal')]"));
+        List<WebElement> linkList = driver.findElements(By.xpath("//ul[@id='s-results-list-atf']/li[contains(@class, 's-result-item')]/div[@class='s-item-container']/div/div/span/div/a[contains(@class, 'a-link-normal')]"));
         if(linkList == null || linkList.size() == 0){
             linkList = driver.findElements(By.xpath("//ul[@id='resultItems']/li[@class='sx-table-item']/a[contains(@class, 'a-link-normal')]"));
         }
-        String selectLinkOpeninNewTab = Keys.chord(Keys.CONTROL,Keys.RETURN);
 
-        String base = driver.getWindowHandle();
-        for (int i = 0; i < linkList.size(); i++) {
-            Actions action = new Actions(driver);
-            linkList.get(i).sendKeys(selectLinkOpeninNewTab);
-            try {
-                Thread.sleep(1000);
-            }catch(InterruptedException ex){
-                logger.error(ex.getLocalizedMessage(), ex);
-            }
-            action.keyDown(Keys.LEFT_CONTROL).sendKeys(Keys.TAB).keyUp(Keys.LEFT_CONTROL).perform();
-            saveSnapshot(driver);
-            Set<String> tabs = driver.getWindowHandles();
-            while(tabs.size() < 2){
-                try {
-                    Thread.sleep(1000);
-                }catch(InterruptedException ex){
-                    logger.error(ex.getLocalizedMessage(), ex);
-                }
-                tabs = driver.getWindowHandles();
-            }
-            String newTab = null;
-            for(String tab: tabs){
-                logger.info("------"+tab+"-------");
-                if(!tab.equals(base)){
-                    newTab = tab;
-                    break;
-                }
-            }
+        List<String> urlList = new ArrayList<>();
+        for(WebElement we : linkList){
+            urlList.add(we.getAttribute("href"));
+        }
 
-            boolean newTabReady = false;
-            do {
-                try {
-                    logger.info("new tab is not ready!");
-                    driver.switchTo().window(newTab);
-                    newTabReady = true;
-                } catch (NullPointerException ex) {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException iex) {
-                        logger.error(ex.getLocalizedMessage(), iex);
-                    }
-                }
-            }while(!newTabReady);
-
+        for (int i = 0; i < urlList.size(); i++) {
+            driver.get(urlList.get(i));
+//                logger.info(driver.getPageSource());
             List<WebElement> sizeList = driver.findElements(By.xpath("//select[@id='native_dropdown_selected_size_name']/option[@class='dropdownAvailable']"));
             for (int j = 0; j < sizeList.size(); j++) {
                 sizeList.get(j).click();
+//                logger.info(driver.getPageSource());
+                waitForLoad(driver);
                 List<WebElement> colorList = driver.findElements(By.xpath("//div[@id='variation_color_name']/ul/li[@class='swatchAvailable']/span/div/span/span/span/button[@class='a-button-text']"));
-                for (int k = 0; k < colorList.size(); k++) {
-                    colorList.get(k).click();
-                    WebElement productColor = driver.findElement(By.xpath("//div[@id='variation_color_name']/div/span"));
-                    while(productColor == null){
-                        try {
-                            Thread.sleep(1000);
-                        }catch(InterruptedException ex){
-                            logger.error(ex.getLocalizedMessage(), ex);
-                        }
-                        productColor = driver.findElement(By.xpath("//div[@id='variation_color_name']/div/span"));
+                if(colorList != null && colorList.size() > 0) {
+                    for (int k = 0; k < colorList.size(); k++) {
+                        colorList.get(k).click();
+                        waitForLoad(driver);
+                        parseProduct(driver);
                     }
-                    WebElement productTitle = driver.findElement(By.id("productTitle"));
-                    WebElement productPrice = null;
-                    try {
-                        productPrice = driver.findElement(By.xpath("//div[@id='price_feature_div']/div[@id='price']/table/tbody/tr/td/span[@id='priceblock_ourprice']"));
-                    }catch(NoSuchElementException nsee){
-                        continue;
-                    }
-                    String productSize = sizeList.get(j).getText();
-                    logger.info(productTitle.getText());
-                    logger.info(productSize);
-                    logger.info(productColor.getText());
-                    logger.info(productPrice.getText());
+                }else{
+                    parseProduct(driver);
                 }
             }
             logger.info(driver.getTitle());
-//            action.keyDown(Keys.LEFT_CONTROL).sendKeys("w").keyUp(Keys.LEFT_CONTROL).perform();
-            driver.close();
-            // driver.findElement(By.tagName("body")).sendKeys(Keys.chord(Keys.LEFT_CONTROL+"w"));
-            driver.switchTo().window(base);
         }
     }
 
+    public void parseProduct(WebDriver driver){
+        WebElement productSize = driver.findElement(By.xpath("//select[@id='native_dropdown_selected_size_name']/option[@class='dropdownSelect']"));
+        WebElement productColor = driver.findElement(By.xpath("//div[@id='variation_color_name']/div/span"));
+        WebElement productTitle = driver.findElement(By.id("productTitle"));
+        WebElement productPrice = null;
+        try{
+            productPrice = driver.findElement(By.id("priceblock_saleprice"));
+        }catch(NoSuchElementException nsee){
+            try{
+                productPrice = driver.findElement(By.id("priceblock_ourprice"));
+            }catch(NoSuchElementException nsee2){
+                return;
+            }
+        }
 
+        logger.info(productTitle.getText()+"|"+productSize.getText()+"|"+productColor.getText()+"|"+productPrice.getText());
+
+    }
     public static void saveSnapshot(WebDriver driver){
         File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
         try {

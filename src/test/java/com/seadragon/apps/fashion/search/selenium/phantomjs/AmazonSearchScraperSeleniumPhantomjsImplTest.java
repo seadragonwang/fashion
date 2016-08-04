@@ -21,7 +21,7 @@ public class AmazonSearchScraperSeleniumPhantomjsImplTest {
     @Before
     public void setUp() throws Exception {
         DesiredCapabilities caps = DesiredCapabilities.phantomjs();
-        caps.setCapability("phantomjs.page.settings.userAgent", "Mozilla/5.0 (Linux; U; Android 2.3.3; en-us; LG-LU3000 Build/GRI40) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1");
+        caps.setCapability("phantomjs.page.settings.userAgent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.120 Safari/537.36");
 
         caps.setJavascriptEnabled(true);
         caps.setCapability("takesScreenshot", true);

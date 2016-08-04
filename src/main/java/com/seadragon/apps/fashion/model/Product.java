@@ -42,10 +42,7 @@ public class Product {
 
 	@Column(name="DATE_CREATED")
 	private Date dateCreated;
-	
-	@Column(name="DATE_UPDATED")
-	private Date dateUpdated;
-	
+
 	@OneToMany(fetch=FetchType.EAGER, mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
 	@OrderBy("dateCreated desc")
 	private List<ProductDetail> productDetails = new ArrayList<ProductDetail>();
@@ -116,14 +113,6 @@ public class Product {
 
 	public void setDateCreated(Date dateCreated) {
 		this.dateCreated = dateCreated;
-	}
-
-	public Date getDateUpdated() {
-		return dateUpdated;
-	}
-
-	public void setDateUpdated(Date dateUpdated) {
-		this.dateUpdated = dateUpdated;
 	}
 
 	public List<ProductDetail> getProductDetails() {
